@@ -115,21 +115,21 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
 
 ### 4.2. Multivariate Analysis
 
-#### 4.1.1 Distribusi Usia berdasarkan RiskLevel
+#### 4.2.1 Distribusi Usia berdasarkan RiskLevel
 <p align="center">
   <img src="images/age_by_risklevel.png" width="1000"/>
 </p>
 
 > **Insight : **Umur ibu dengan risiko tinggi cenderung lebih tua.
 
-#### 4.1.2 Distribusi Tekanan Darah Sistolik berdasarkan RiskLevel
+#### 4.2.2 Distribusi Tekanan Darah Sistolik berdasarkan RiskLevel
 <p align="center">
   <img src="images/sistolic_by_risklevel.png" width="1000"/>
 </p>
 
 > **Insight : **Tekanan sistolik lebih tinggi dan variatif pada kelompok risiko tinggi.
 
-#### 4.1.3 Distribusi Tekanan Darah Diastolik berdasarkan RiskLevel
+#### 4.2.3 Distribusi Tekanan Darah Diastolik berdasarkan RiskLevel
 
 <p align="center">
   <img src="images/diastolic_by_risklevel.png" width="1000"/>
@@ -137,7 +137,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
 
 > **Insight : ** Tekanan diastolik lebih tinggi pada kelompok risiko tinggi.
 
-#### 4.1.4 Distribusi Gula Darah berdasarkan RiskLevel
+#### 4.2.4 Distribusi Gula Darah berdasarkan RiskLevel
 
 <p align="center">
   <img src="images/sugar_by_risklevel.png" width="1000"/>
@@ -145,7 +145,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
 
 > **Insight : ** Gula darah pada risiko tinggi menunjukkan nilai tengah dan rentang lebih tinggi.
 
-#### 4.1.5 Distribusi Suhu Tubuh berdasarkan RiskLevel
+#### 4.2.5 Distribusi Suhu Tubuh berdasarkan RiskLevel
 
 <p align="center">
   <img src="images/temperature_by_risklevel.png" width="1000"/>
@@ -153,7 +153,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
 
 > **Insight : ** Suhu tubuh ibu berisiko tinggi sedikit lebih tersebar di suhu tinggi.
 
-#### 4.1.6 Distribusi Detak Jantung berdasarkan RiskLevel
+#### 4.2.6 Distribusi Detak Jantung berdasarkan RiskLevel
 
 <p align="center">
   <img src="images/heartrate_by_risklevel.png" width="1000"/>
