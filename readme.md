@@ -143,7 +143,8 @@ Tekanan diastolik lebih tinggi pada kelompok risiko tinggi.
   <img src="images/sugar_by_risk_level.png" width="500"/>
 </p>
 
-###### Insight: Gula darah pada risiko tinggi menunjukkan nilai tengah dan rentang lebih tinggi.
+###### Insight: 
+Gula darah pada risiko tinggi menunjukkan nilai tengah dan rentang lebih tinggi.
 
   #### 4.2.5 Distribusi Suhu Tubuh berdasarkan RiskLevel
 
@@ -303,6 +304,16 @@ SVM adalah algoritma supervised learning yang mencari hyperplane optimal untuk m
 - `class_weight='balanced'`: menyeimbangkan pengaruh setiap kelas berdasarkan frekuensi.
 - `random_state=42`: agar hasil reproducible.
 
+#### Kelebihan dan Kekurangan SVM
+
+| Kelebihan                                                                 | Kekurangan                                                                 |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| Efektif pada data berdimensi tinggi                                      | Tidak efisien untuk dataset yang sangat besar (kompleksitas waktu tinggi) |
+| Mampu memisahkan data non-linear menggunakan kernel trick                | Sensitif terhadap pemilihan kernel dan parameter                          |
+| Bekerja baik jika margin antar kelas jelas                               | Tidak cocok untuk data dengan noise tinggi atau kelas yang saling tumpang |
+| Mendukung regularisasi untuk mencegah overfitting                        | Interpretasi hasil model sulit dibanding model pohon atau regresi         |
+
+
 ### 6.2 **KNN (K-Nearest Neighbors)**
 
  #### Cara kerja
@@ -313,12 +324,32 @@ KNN adalah algoritma berbasis instance yang mengklasifikasikan data baru berdasa
 - `weights='uniform'`
 - `metric='minkowski'`
 
+#### Kelebihan dan Kekurangan KNN
+
+| Kelebihan                                                              | Kekurangan                                                                 |
+|------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| Implementasi sederhana dan mudah dipahami                             | Performa lambat saat prediksi data besar karena harus menghitung semua jarak |
+| Tidak membutuhkan pelatihan (lazy learning)                           | Sangat sensitif terhadap skala fitur (perlu normalisasi)                  |
+| Cocok untuk data yang distribusinya tidak diketahui                   | Sulit menangani data berdimensi tinggi (curse of dimensionality)         |
+| Dapat bekerja baik pada data dengan distribusi kelas yang seimbang    | Tidak tahan terhadap noise atau outlier                                  |
+
+
 ### 6.3. **Random Forest**
  #### Cara Kerja
 Random Forest adalah ensemble learning berbasis decision tree. Model membentuk banyak pohon (tree) dan menggabungkan hasil voting/average untuk meningkatkan akurasi dan mengurangi overfitting.
 
  ##### Parameter Default
 - `random_state=42`: untuk memastikan hasil konsisten.
+
+#### Kelebihan dan Kekurangan Random Forest
+
+| Kelebihan                                                                | Kekurangan                                                                  |
+|-------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| Akurasi tinggi dan tahan terhadap overfitting                           | Interpretasi model sulit karena terdiri dari banyak pohon                  |
+| Dapat menangani data numerik dan kategorikal                            | Membutuhkan waktu dan memori lebih besar daripada model sederhana          |
+| Mampu menangani missing value dan data imbalance (dengan class_weight)  | Hasil prediksi bisa kurang akurat jika terlalu banyak noise dalam data     |
+| Memberikan feature importance secara langsung                           | Cenderung lambat untuk prediksi real-time pada dataset besar               |
+
 
 ### 6.4. **XGBoost**
  ##### Cara Kerja
@@ -330,6 +361,15 @@ XGBoost (Extreme Gradient Boosting) adalah algoritma boosting berbasis pohon kep
 - `learning_rate=0.0439`: seberapa besar kontribusi setiap pohon.
 - `scale_pos_weight=[1.0, 2.2, 2.5]`: penyesuaian untuk kelas tidak seimbang.
 - `objective='multi:softprob'`: untuk klasifikasi multi-kelas.
+
+#### Kelebihan dan Kekurangan XGBoost
+
+| Kelebihan                                                                | Kekurangan                                                                  |
+|-------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| Performa prediksi sangat tinggi di banyak kompetisi dan kasus nyata     | Hyperparameter tuning kompleks dan membutuhkan waktu                       |
+| Mampu menangani missing value secara otomatis                           | Interpretasi model lebih sulit daripada pohon keputusan biasa              |
+| Efisien dan cepat karena teknik boosting yang dioptimasi                | Risiko overfitting jika tidak dikontrol dengan regularisasi                |
+| Mendukung regularisasi (L1 dan L2) untuk mengurangi overfitting         | Membutuhkan pemahaman teknis lebih dalam untuk penggunaan optimal          |
 
 ---
 
@@ -400,7 +440,7 @@ weighted avg    0.58      0.54      0.55        91
 
 ---
 
- ### 7.2 **KNN (K-Nearest Neighbors) 
+ ### 7.2 **KNN (K-Nearest Neighbors)**
    ### 7.2.1 **KNN (K-Nearest Neighbors) sebelum Tuning**
 
 ```python
@@ -464,7 +504,8 @@ Model kuat mengenali kelas Low Risk, namun masih lemah untuk Mid dan High Risk.
 
  ##### 7.2.2 **KNN (K-Nearest Neighbors) setelah Tuning**
 
-```python
+```
+python
 import optuna
 from sklearn.metrics import accuracy_score
 
@@ -556,7 +597,8 @@ Tuning meningkatkan akurasi dari 62% menjadi 67%. Model semakin baik mengenali L
 ### 7.3 Random Forest
  #### 7.3.1 Random Forest Sebelum Tuning
 
-```python
+```
+python
 from sklearn.ensemble import RandomForestClassifier
 
 rf_model = RandomForestClassifier(random_state=42)
@@ -588,7 +630,8 @@ weighted avg    0.59      0.63      0.59        91
 
   #### 7.3.2 Tuning Random Forest dengan Optuna
 
-```python
+```
+python
 import optuna
 
 def objective(trial):
@@ -865,4 +908,14 @@ Kontribusi fitur ini memiliki pengaruh langsung terhadap akurasi model. Ketika f
 Sebaliknya, jika dimasukkan fitur yang kurang informatif (seperti BodyTemp), maka akan terjadi noise yang dapat menurunkan performa model.
 
 Oleh karena itu, pemilihan dan pemanfaatan fitur yang tepat—khususnya fitur-fitur dengan kontribusi tinggi seperti BS dan SystolicBP—sangat penting dalam membangun model prediktif yang akurat dan dapat diandalkan, guna mendeteksi risiko maternal secara dini dan tepat sasaran.
-```
+
+## Referensi
+- World Health Organization. (2025). Maternal Mortality. https://www.who.int/news-room/fact-sheets/detail/maternal-mortality
+- Al-Abri, M., Al-Zakwani, I., & Al-Hinai, F. (2024). Predicting maternal risk level using machine learning models. BMC Pregnancy and Childbirth, 24(1), 112.
+- Sharma, S., Patel, A., & Gupta, R. (2023). Deep hybrid model for maternal health risk classification in pregnancy: Synergy of ANN and Random Forest. Frontiers in Artificial Intelligence, 6, 1213436.
+- Mohammed, A., Arif, M., & Tripathy, B. K. (2022). Ensemble learning-based feature engineering to analyze maternal health risk data. PLOS ONE, 17(10), e0276525.
+- Liu, Y., Zhang, H., & Wang, T. (2023). Explainable machine learning models to analyze maternal health. Decision Support Systems, 172, 113157.
+- Lakshmi, B., & Rani, S. (2023). Classification of maternal health risks using machine learning methods. Lecture Notes in Networks and Systems, 743, 1066–1078.
+- Gupta, R., & Sharma, M. (2025). A machine learning approach for predicting maternal health risks in low-resource settings. Future Internet, 17(5), 190.
+
+
