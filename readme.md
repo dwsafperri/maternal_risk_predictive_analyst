@@ -85,10 +85,19 @@ Langkah utama dalam proyek ini:
 
 ### 4.1 Univariate Analysis
 
+#### 4.1.1 Categorical Features
 <p align="center">
-  <img src="images/categorical_distribution.png" width="1000"/>
+  <img src="images/category_distribution.png" width="1000"/>
 </p>
 
+**Insight:**
+
+1. Low Risk merupakan kategori terbanyak dengan proporsi sekitar 40% dari seluruh data. Ini menunjukkan sebagian besar ibu hamil dalam dataset berada dalam kondisi kesehatan yang relatif baik.
+2. Mid Risk menempati urutan kedua dengan 33%, mengindikasikan bahwa sepertiga populasi berada dalam kondisi kesehatan yang perlu diperhatikan namun belum darurat.
+3. High Risk hanya mencakup sekitar 27% dari data, artinya jumlah kasus kehamilan dengan risiko tinggi cukup signifikan tapi tidak dominan.
+Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model klasifikasi.
+
+#### 4.1.2 Numerical Features
 <p align="center">
   <img src="images/numerical_distribution.png" width="1000"/>
 </p>
