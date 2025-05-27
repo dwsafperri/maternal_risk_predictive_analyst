@@ -29,10 +29,8 @@ Dengan bantuan teknologi machine learning, kita dapat membangun sistem prediksi 
 - Melakukan analisis statistik dan membangun model machine learning untuk mengukur kontribusi parameter medis (seperti tekanan darah, kadar hemoglobin, usia kehamilan, dll) terhadap klasifikasi risiko.
 - Menerapkan beberapa algoritma machine learning dan membandingkan performa akurasi model dalam memprediksi risiko kesehatan maternal.
 - Memberikan insight medis melalui analisis kombinasi variabel terhadap tingkat risiko maternal untuk membantu deteksi dini potensi komplikasi kehamilan.
-
----
-
-## 2.4 Metodologi
+ 
+### 2.4 Metodologi
 
 Metodologi yang digunakan adalah klasifikasi multi-kelas dengan beberapa algoritma machine learning untuk mengelompokkan risiko menjadi tiga kategori:
 
@@ -49,15 +47,9 @@ Langkah utama dalam proyek ini:
    - KNN
    - Random Forest
    - XGBoost
-4. Evaluasi performa model menggunakan confusion matrix dan metrik akurasi
-
----
-
-## Metrik Evaluasi
-
-- **Confusion Matrix**: Untuk mengevaluasi jumlah prediksi benar dan salah dari masing-masing kelas.
-- **Accuracy**: Untuk mengetahui persentase prediksi yang benar secara keseluruhan.
-
+4. Evaluasi performa model menggunakan confusion matrix dan metrik akurasi.
+   - **Confusion Matrix**: Untuk mengevaluasi jumlah prediksi benar dan salah dari masing-masing kelas.
+   - **Accuracy**: Untuk mengetahui persentase prediksi yang benar secara keseluruhan.
 ---
 
 ## 3. Data Understanding
@@ -283,42 +275,407 @@ def evaluate_model(true_labels, predicted_labels, plot_title, class_labels=None)
 ```
 
 
-## 6 Model yang Digunakan
+## 6. Modeling
 
 ###6.1. **SVM (Support Vector Machine)**
+#### Cara Kerja
+SVM adalah algoritma supervised learning yang mencari hyperplane optimal untuk memisahkan kelas. Untuk data non-linear, digunakan kernel seperti `'rbf'` untuk memetakan data ke dimensi lebih tinggi agar dapat dipisahkan.
 
-   - Akurasi: 53.85%
+#### Parameter Utama
+- `kernel='rbf'`: fungsi kernel radial basis function untuk menangani data non-linear.
+- `class_weight='balanced'`: menyeimbangkan pengaruh setiap kelas berdasarkan frekuensi.
+- `random_state=42`: agar hasil reproducible.
+
+```python
+from sklearn.svm import SVC
+
+model_svm = SVC(kernel='rbf', random_state=42, class_weight='balanced')
+model_svm.fit(X_train, y_train)
+
+y_pred_encoded = model_svm.predict(X_test)
+y_pred_labels = le.inverse_transform(y_pred_encoded)
+y_test_labels = le.inverse_transform(y_test)
+
+evaluate_model(y_test_labels, y_pred_labels, "Confusion Matrix Menggunakan Algoritma SVM", class_labels=target_nama)
+```
+
+#### Evaluasi
    <p align="center">
      <img src="images/confusion_matrix_svm.png" width="600"/>
    </p>
+   ```
+              precision    recall  f1-score   support
 
+       0       0.64      0.53      0.58        47
+       1       0.38      0.58      0.46        26
+       2       0.69      0.50      0.58        18
+
+accuracy                           0.54        91
+macro avg       0.57      0.54      0.54        91
+weighted avg    0.58      0.54      0.55        91
+```
+
+#### Confusion Matrix (SVM)
+
+|               | Predicted Low (0) | Predicted Mid (1) | Predicted High (2) |
+|---------------|------------------|-------------------|--------------------|
+| **Actual Low (0)**  | 25               | 20 *(FP)*          | 2                  |
+| **Actual Mid (1)**  | 9 *(FN)*         | 15                 | 2                  |
+| **Actual High (2)** | 5 *(FN)*         | 4                  | 9                  |
+
+---
+
+#### Ringkasan Metrik:
+
+- **Akurasi**: 54%
+- **Macro avg F1-score**: 0.54
+- **Weighted avg F1-score**: 0.55
+
+**Performa Per Kelas:**
+- **Low Risk (0)**:
+  - Precision: 0.64
+  - Recall: 0.53
+  - Banyak salah diklasifikasikan sebagai Mid (20 kasus).
+- **Mid Risk (1)**:
+  - Precision: 0.38, Recall: 0.58
+  - Recall cukup baik, tapi precision rendah → banyak prediksi Mid yang salah.
+- **High Risk (2)**:
+  - Precision: 0.69, Recall: 0.50
+  - Sekitar separuh data High Risk berhasil dikenali.
+
+#### Insight:
+- Model **tidak stabil antar kelas**, terutama kelas `Mid Risk`.
+- Banyak kesalahan prediksi menuju kelas `Mid`, baik dari `Low` maupun `High`.
+- Perlu peningkatan pada **pemisahan antar kelas**, terutama antara `Low` dan `Mid`.
+
+---
+
+
+Berikut format Markdown yang sudah rapih dan siap kamu copy-paste langsung:
+
+```markdown
 ### 6.2 **KNN (K-Nearest Neighbors)**
 
-   - Akurasi awal: 62%
-   - Akurasi setelah tuning: 67.03%
-   <p align="center">
-     <img src="images/confusion_matrix_knn.png" width="600"/>
-   </p>
-   <p align="center">
-     <img src="images/confusion_matrix_knn_tuned.png" width="600"/>
-   </p>
+#### Cara kerja
+KNN adalah algoritma berbasis instance yang mengklasifikasikan data baru berdasarkan mayoritas kelas dari k tetangga terdekatnya. Jarak antar titik biasanya dihitung dengan metrik seperti Euclidean atau Manhattan.
+
+#### Parameter Default
+- `n_neighbors=5`
+- `weights='uniform'`
+- `metric='minkowski'`
+
+##### 6.2.1 **KNN (K-Nearest Neighbors) sebelum Tuning**
+
+```python
+from sklearn.neighbors import KNeighborsClassifier
+
+model_knn = KNeighborsClassifier(n_neighbors=5)
+model_knn.fit(X_train, y_train)
+
+y_pred = model_knn.predict(X_test)
+
+y_pred_labels = le.inverse_transform(y_pred)
+y_test_labels = le.inverse_transform(y_test)
+
+evaluate_model(y_test_labels, y_pred_labels, "Confusion Matrix Menggunakan Algoritma KNN", class_labels=target_nama)
+```
+
+```
+              precision    recall  f1-score   support
+
+           0       0.59      0.94      0.72        47
+           1       0.62      0.19      0.29        26
+           2       0.88      0.39      0.54        18
+
+    accuracy                           0.62        91
+   macro avg       0.70      0.51      0.52        91
+weighted avg       0.65      0.62      0.56        91
+```
+
+**Confusion Matrix (KNN):**
+
+|                  | Predicted Low (0) | Predicted Mid (1) | Predicted High (2) |
+|------------------|-------------------|-------------------|--------------------|
+| Actual Low (0)    | 44                | 2                 | 1                  |
+| Actual Mid (1)    | 21 (False Negative)| 5                 | 0                  |
+| Actual High (2)   | 10 (False Negative)| 1                 | 7                  |
+
+**Ringkasan Metrik:**
+
+- Accuracy: 62%
+- Macro avg F1-score: 0.52
+- Weighted avg F1-score: 0.56
+
+**Per Kelas:**
+
+- Low Risk (0)  
+  Precision: 0.59, Recall: 0.94  
+  Hampir semua low risk dikenali, tapi precision sedang.
+
+- Mid Risk (1)  
+  Precision: 0.62, Recall: 0.19  
+  Mayoritas data mid risk salah dikira low risk.
+
+- High Risk (2)  
+  Precision: 0.88, Recall: 0.39  
+  Prediksi cukup tepat, tapi recall rendah.
+
+**Kesimpulan:**  
+Model kuat mengenali kelas Low Risk, namun masih lemah untuk Mid dan High Risk.
+
+---
+
+##### 6.2.2 **KNN (K-Nearest Neighbors) setelah Tuning**
+
+```python
+import optuna
+from sklearn.metrics import accuracy_score
+
+def objective(trial):
+    n_neighbors = trial.suggest_int("n_neighbors", 1, 30)
+    weights = trial.suggest_categorical("weights", ["uniform", "distance"])
+    metric = trial.suggest_categorical("metric", ["euclidean", "manhattan", "minkowski"])
+
+    model = KNeighborsClassifier(
+        n_neighbors=n_neighbors,
+        weights=weights,
+        metric=metric
+    )
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    return acc
+
+study_knn = optuna.create_study(direction="maximize")
+study_knn.optimize(objective, n_trials=100)
+
+print("Best hyperparameters:", study_knn.best_params)
+print("Best accuracy:", study_knn.best_value)
+
+best_params = study_knn.best_params
+
+best_knn = KNeighborsClassifier(
+    n_neighbors=best_params["n_neighbors"],
+    weights=best_params["weights"],
+    metric=best_params["metric"]
+)
+
+best_knn.fit(X_train, y_train)
+y_pred = best_knn.predict(X_test)
+
+y_pred_labels = le.inverse_transform(y_pred)
+y_test_labels = le.inverse_transform(y_test)
+
+accuracy_knn_opt = round(accuracy_score(y_test, y_pred) * 100, 2)
+print(f"Akurasi KNN setelah tuning: {accuracy_knn_opt}%")
+
+evaluate_model(y_test_labels, y_pred_labels, "Confusion Matrix KNN Setelah Tuning", class_labels=target_nama)
+```
+
+```
+              precision    recall  f1-score   support
+
+           0       0.62      1.00      0.76        47
+           1       0.83      0.19      0.31        26
+           2       1.00      0.50      0.67        18
+
+    accuracy                           0.67        91
+   macro avg       0.82      0.56      0.58        91
+weighted avg       0.76      0.67      0.62        91
+```
+
+**Confusion Matrix (KNN Setelah Tuning):**
+
+|                  | Predicted Low (0) | Predicted Mid (1) | Predicted High (2) |
+|------------------|-------------------|-------------------|--------------------|
+| Actual Low (0)    | 47                | 0                 | 0                  |
+| Actual Mid (1)    | 21 (False Negative)| 5                 | 0                  |
+| Actual High (2)   | 8 (False Negative) | 1                 | 9                  |
+
+**Ringkasan Metrik:**
+
+- Accuracy: 67%
+- Macro avg F1-score: 0.58
+- Weighted avg F1-score: 0.62
+
+**Per Kelas:**
+
+- Low Risk (0)  
+  Precision: 0.62, Recall: 1.00  
+  Semua low risk dikenali dengan benar.
+
+- Mid Risk (1)  
+  Precision: 0.83, Recall: 0.19  
+  Model masih gagal mengenali mayoritas mid risk.
+
+- High Risk (2)  
+  Precision: 1.00, Recall: 0.50  
+  Prediksi sangat tepat untuk high risk, namun recall masih rendah.
+
+**Kesimpulan:**  
+Tuning meningkatkan akurasi dari 62% menjadi 67%. Model semakin baik mengenali Low Risk secara sempurna, tapi performa kelas Mid dan High masih perlu perbaikan.
+
+```
 
 ### 6.3. **Random Forest**
+#### Cara Kerja
+Random Forest adalah ensemble learning berbasis decision tree. Model membentuk banyak pohon (tree) dan menggabungkan hasil voting/average untuk meningkatkan akurasi dan mengurangi overfitting.
 
-   - Akurasi setelah tuning: 71.43%
-   <p align="center">
-     <img src="images/confusion_matrix_rf.png" width="600"/>
-   </p>
+##### Parameter Default
+- `random_state=42`: untuk memastikan hasil konsisten.
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X_train, y_train)
+
+y_pred = rf_model.predict(X_test)
+
+evaluate_model(y_test, y_pred, "Confusion Matrix Menggunakan Algoritma Random Forest", class_labels=target_nama)
+```
+
+##### Evaluasi Awal
+<p align="center">
+     <img src="images/confusion_matrix_rf.png" width="600
+</p>
+
+```
+              precision    recall  f1-score   support
+
+       0       0.65      0.85      0.73        47
+       1       0.42      0.19      0.26        26
+       2       0.71      0.67      0.69        18
+
+accuracy                           0.63        91
+macro avg       0.59      0.57      0.56        91
+weighted avg    0.59      0.63      0.59        91
+```
+
+---
+
+#### 6.3.2 Tuning Random Forest dengan Optuna
+
+```python
+import optuna
+
+def objective(trial):
+    params = {
+        'n_estimators': trial.suggest_int('n_estimators', 50, 300),
+        'max_depth': trial.suggest_int('max_depth', 5, 30),
+        'min_samples_split': trial.suggest_int('min_samples_split', 2, 10),
+        'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10),
+        'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2', None]),
+        'bootstrap': trial.suggest_categorical('bootstrap', [True, False]),
+        'random_state': 42
+    }
+    model = RandomForestClassifier(**params)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    return accuracy_score(y_test, y_pred)
+
+study_rf = optuna.create_study(direction='maximize')
+study_rf.optimize(objective, n_trials=100)
+
+print("Best hyperparameters:", study_rf.best_params)
+print("Best accuracy:", study_rf.best_value)
+```
+
+Setelah tuning:
+
+```python
+best_params_rf = study_rf.best_params
+
+best_rf = RandomForestClassifier(
+    **best_params_rf,
+    random_state=42,
+    n_jobs=-1
+)
+
+best_rf.fit(X_train, y_train)
+y_pred_rf = best_rf.predict(X_test)
+
+y_pred_labels_rf = le.inverse_transform(y_pred_rf)
+y_test_labels_rf = le.inverse_transform(y_test)
+
+evaluate_model(y_test_labels_rf, y_pred_labels_rf, "Confusion Matrix Random Forest Setelah Tuning", class_labels=target_nama)
+```
+
+---
+
+#### Evaluasi Setelah Tuning
+
    <p align="center">
      <img src="images/confusion_matrix_rf_tuned.png" width="600"/>
    </p>
+   
+```
+              precision    recall  f1-score   support
+
+       0       0.67      0.98      0.79        47
+       1       0.80      0.15      0.26        26
+       2       0.88      0.83      0.86        18
+
+accuracy                           0.71        91
+macro avg       0.78      0.66      0.64        91
+weighted avg    0.75      0.71      0.65        91
+```
+
+#### Confusion Matrix (Setelah Tuning)
+
+|                | Pred Low (0) | Pred Mid (1) | Pred High (2) |
+|----------------|--------------|---------------|----------------|
+| **Actual Low (0)**  | 46           | 1             | 0              |
+| **Actual Mid (1)**  | 20           | 4             | 2              |
+| **Actual High (2)** | 3            | 0             | 15             |
+
+---
+
+#### Ringkasan Metrik:
+
+- **Akurasi**: 71.43%
+- **Macro Avg F1-score**: 0.64
+- **Weighted Avg F1-score**: 0.65
+
+**Performa Per Kelas:**
+- **Low Risk (0)**:
+  - Precision: 0.67 | Recall: 0.98 | F1-score: 0.79
+  - Hampir semua prediksi tepat.
+- **Mid Risk (1)**:
+  - Precision: 0.80 | Recall: 0.15 | F1-score: 0.26
+  - Recall sangat rendah, banyak Mid Risk tidak dikenali.
+- **High Risk (2)**:
+  - Precision: 0.88 | Recall: 0.83 | F1-score: 0.86
+  - Sangat baik dalam mendeteksi kelas berisiko tinggi.
+
+---
+
+#### Insight:
+Random Forest dengan tuning **merupakan model terbaik sejauh ini** karena:
+
+- **Akurasi tertinggi**: 71.43%
+- **F1-score tertinggi untuk High Risk**: 0.86
+- **Stabil dalam mengenali Low dan High Risk**
+
+Namun, kelemahannya tetap sama seperti model lain:
+- **Kelas Mid Risk sulit dikenali**, dengan recall hanya 0.15.
+- Disarankan melakukan penanganan ketidakseimbangan data, misalnya dengan:
+  - Oversampling kelas Mid
+  - SMOTE
+  - Class weight khusus
+
+---
 
 ### 6.4. **XGBoost**
-  ### 6.4.1 **XGBoost Before Tuning**
-   ##### Cara Kerja
+  #### 6.4.1 **XGBoost Before Tuning**
+  <p align="center">
+     <img src="images/confusion_matrix_xgb.png" width="600"/>
+   </p>
+   ###### Cara Kerja
 XGBoost (Extreme Gradient Boosting) adalah algoritma boosting berbasis pohon keputusan yang membangun model secara bertahap dengan meminimalkan kesalahan dari model sebelumnya. Cocok untuk dataset tabular dan kompetisi ML.
 
-#### Parameter Utama
+##### Parameter Utama
 - `max_depth=5`: mengontrol kedalaman pohon (kompleksitas model).
 - `n_estimators=168`: jumlah total pohon yang dibangun.
 - `learning_rate=0.0439`: seberapa besar kontribusi setiap pohon.
@@ -348,7 +705,7 @@ print("Hasil akurasi model xgboost: ", accuracy_xgboost, "%")
 evaluate_model(y_test_labels, y_pred_labels, "Confusion Matrix Menggunakan Algoritma XGBoost", class_labels=target_nama)
 ```
 
-#### Evaluasi
+##### Evaluasi
 
 ```
               precision    recall  f1-score   support
@@ -368,6 +725,9 @@ weighted avg    0.64      0.66      0.62        91
 - Kesalahan umum: `Mid` sering diklasifikasikan sebagai `Low`.
 
 ### 6.4.2 XGBoost After Tuning
+ <p align="center">
+     <img src="images/confusion_matrix_xgb_tuned.png" width="600"/>
+   </p>
 #### Hasil dan Evaluasi Model Terbaik
 
 ```python
@@ -406,17 +766,6 @@ weighted avg    0.79      0.70      0.63        91
 - Recall kelas `Low` sangat tinggi (**0.98**), namun recall `Mid` masih sangat rendah (**0.12**).
 - Distribusi kelas tetap menjadi tantangan utama, terutama pada `Mid Risk`.
 
----
-
----
-   <p align="center">
-     <img src="images/confusion_matrix_xgb.png" width="600"/>
-   </p>
-   <p align="center">
-     <img src="images/confusion_matrix_xgb_tuned.png" width="600"/>
-   </p>
-
----
 
 ## 📝 Kesimpulan
 
