@@ -261,18 +261,38 @@ X_test = X_test.values
 
 ---
 
+## Fungsi Evaluasi Model
+
+```python
+def evaluate_model(true_labels, predicted_labels, plot_title, class_labels=None):
+    if class_labels is None:
+        class_labels = [2, 0, 1]
+
+    print(classification_report(true_labels, predicted_labels, target_names=[str(label) for label in class_labels]))
+
+    fig, axis = plt.subplots(figsize=(10, 5))
+    matrix = ConfusionMatrixDisplay.from_predictions(true_labels, predicted_labels, ax=axis, labels=class_labels)
+
+    axis.set_xticklabels([str(label) for label in class_labels], rotation=90)
+    axis.set_yticklabels([str(label) for label in class_labels])
+
+    axis.grid(False)
+    axis.set_title(plot_title)
+    plt.tight_layout()
+    plt.show()
+```
 
 
-## 🔍 Model yang Digunakan
+## 6 Model yang Digunakan
 
-1. **SVM (Support Vector Machine)**
+###6.1. **SVM (Support Vector Machine)**
 
    - Akurasi: 53.85%
    <p align="center">
      <img src="images/confusion_matrix_svm.png" width="600"/>
    </p>
 
-2. **KNN (K-Nearest Neighbors)**
+### 6.2 **KNN (K-Nearest Neighbors)**
 
    - Akurasi awal: 62%
    - Akurasi setelah tuning: 67.03%
@@ -283,7 +303,7 @@ X_test = X_test.values
      <img src="images/confusion_matrix_knn_tuned.png" width="600"/>
    </p>
 
-3. **Random Forest**
+### 6.3. **Random Forest**
 
    - Akurasi setelah tuning: 71.43%
    <p align="center">
@@ -293,9 +313,102 @@ X_test = X_test.values
      <img src="images/confusion_matrix_rf_tuned.png" width="600"/>
    </p>
 
-4. **XGBoost**
+### 6.4. **XGBoost**
+  ### 6.4.1 **XGBoost Before Tuning**
+   ##### Cara Kerja
+XGBoost (Extreme Gradient Boosting) adalah algoritma boosting berbasis pohon keputusan yang membangun model secara bertahap dengan meminimalkan kesalahan dari model sebelumnya. Cocok untuk dataset tabular dan kompetisi ML.
 
-   - Akurasi: 65.93%
+#### Parameter Utama
+- `max_depth=5`: mengontrol kedalaman pohon (kompleksitas model).
+- `n_estimators=168`: jumlah total pohon yang dibangun.
+- `learning_rate=0.0439`: seberapa besar kontribusi setiap pohon.
+- `scale_pos_weight=[1.0, 2.2, 2.5]`: penyesuaian untuk kelas tidak seimbang.
+- `objective='multi:softprob'`: untuk klasifikasi multi-kelas.
+
+```python
+model_xgb = XGBClassifier(
+    max_depth=5,
+    n_estimators=168,
+    learning_rate=0.04396509567813328,
+    random_state=9,
+    n_jobs=-1,
+    objective='multi:softprob',
+    num_class=3,
+    eval_metric='mlogloss',
+    scale_pos_weight=[1.0, 2.2, 2.5]
+)
+model_xgb.fit(X_train, y_train)
+pred_xgb = model_xgb.predict(X_test)
+
+y_pred_labels = le.inverse_transform(pred_xgb)
+y_test_labels = le.inverse_transform(y_test)
+
+accuracy_xgboost= round(accuracy_score(y_test, pred_xgb)*100,2)
+print("Hasil akurasi model xgboost: ", accuracy_xgboost, "%")
+evaluate_model(y_test_labels, y_pred_labels, "Confusion Matrix Menggunakan Algoritma XGBoost", class_labels=target_nama)
+```
+
+#### Evaluasi
+
+```
+              precision    recall  f1-score   support
+
+       0       0.65      0.91      0.76        47
+       1       0.45      0.19      0.27        26
+       2       0.86      0.67      0.75        18
+
+accuracy                           0.66        91
+macro avg       0.65      0.59      0.59        91
+weighted avg    0.64      0.66      0.62        91
+```
+
+**Insight:**
+- Akurasi keseluruhan: **65.93%**
+- Model cukup akurat untuk kelas `Low Risk`, namun kesulitan membedakan `Mid` dan sebagian `High`.
+- Kesalahan umum: `Mid` sering diklasifikasikan sebagai `Low`.
+
+### 6.4.2 XGBoost After Tuning
+#### Hasil dan Evaluasi Model Terbaik
+
+```python
+best_model = XGBClassifier(
+    max_depth=study_xgboost.best_params['max_depth'],
+    n_estimators=study_xgboost.best_params['n_estimators'],
+    learning_rate=study_xgboost.best_params['learning_rate'],
+    random_state=study_xgboost.best_params['random_state'],
+    n_jobs=-1,
+    eval_metric='mlogloss',
+    objective='multi:softprob',
+    num_class=num_class
+)
+
+best_model.fit(X_train, y_train)
+y_pred = best_model.predict(X_test)
+evaluate_model(y_test, y_pred, "Confusion Matrix Menggunakan Algoritma XGBoost (Tuning)", class_labels=target_nama)
+```
+
+#### Evaluasi Setelah Tuning
+
+```
+              precision    recall  f1-score   support
+
+       0       0.66      0.98      0.79        47
+       1       1.00      0.12      0.21        26
+       2       0.83      0.83      0.83        18
+
+accuracy                           0.70        91
+macro avg       0.83      0.64      0.61        91
+weighted avg    0.79      0.70      0.63        91
+```
+
+**Insight:**
+- Akurasi meningkat menjadi **70%** setelah tuning.
+- Recall kelas `Low` sangat tinggi (**0.98**), namun recall `Mid` masih sangat rendah (**0.12**).
+- Distribusi kelas tetap menjadi tantangan utama, terutama pada `Mid Risk`.
+
+---
+
+---
    <p align="center">
      <img src="images/confusion_matrix_xgb.png" width="600"/>
    </p>
@@ -304,42 +417,6 @@ X_test = X_test.values
    </p>
 
 ---
-
-## ⚙️ Contoh Kode Pelatihan Model
-
-Berikut adalah contoh pelatihan model Random Forest:
-
-```python
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Model
-rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
-rf.fit(X_train, y_train)
-
-# Prediksi
-y_pred = rf.predict(X_test)
-```
-
-## 🧪 Evaluasi Model
-
-Evaluasi dilakukan menggunakan:
-
-- Confusion Matrix
-- Precision, Recall, F1-Score
-- Akurasi
-
-Contoh pembuatan confusion matrix:
-
-```python
-from sklearn.metrics import confusion_matrix, classification_report
-
-print(confusion_matrix(y_test, y_pred))
-print(classification_report(y_test, y_pred))
-```
 
 ## 📝 Kesimpulan
 
