@@ -151,7 +151,7 @@ Tekanan diastolik lebih tinggi pada kelompok risiko tinggi.
 #### 4.2.4 Distribusi Gula Darah berdasarkan RiskLevel
 
 <p align="center">
-  <img src="images/sugar_by_risk_level.png" width="500"/>
+  <img src="images/sugar_by_risklevel.png" width="500"/>
 </p>
 
 ###### Insight:
@@ -911,7 +911,9 @@ Model memprediksi bahwa pasien ini berada dalam kategori **Low Risk**.
 
 ### b. Apakah model machine learning dapat memberikan klasifikasi risiko yang akurat dan dapat diandalkan untuk membantu pengambilan keputusan dalam dunia medis, khususnya pada kasus maternal?
 
-<p><img src="answer2.png" alt="Evaluasi Akurasi Model" width="600"/></p>
+<p>
+   <img src="answer2.png" alt="Evaluasi Akurasi Model" width="600"/>
+</p>
 
 Berdasarkan hasil evaluasi beberapa model machine learning terhadap akurasi klasifikasi, terlihat bahwa algoritma **Random Forest** memberikan performa terbaik dengan tingkat akurasi mencapai **71,43%**. Model ini secara konsisten mengungguli model lainnya seperti:
 
@@ -935,7 +937,9 @@ Kesimpulannya, **machine learning dapat menjadi alat bantu yang sangat berharga 
 
 ### c. Fitur apa saja yang paling berkontribusi terhadap klasifikasi risiko maternal, dan bagaimana pengaruhnya terhadap tingkat akurasi model?
 
-<p><img src="feature_importance.png" alt="Feature Importance Random Forest" width="600"/></p>
+<p>
+   <img src="feature_importance.png" alt="Feature Importance Random Forest" width="600"/>
+</p>
 
 Dari nilai kontribusi tersebut, terlihat jelas bahwa:
 
