@@ -120,14 +120,14 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
   <img src="images/age_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : **Umur ibu dengan risiko tinggi cenderung lebih tua.
+**Insight : **Umur ibu dengan risiko tinggi cenderung lebih tua.
 
 #### 4.2.2 Distribusi Tekanan Darah Sistolik berdasarkan RiskLevel
 <p align="center">
   <img src="images/sistolic_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : **Tekanan sistolik lebih tinggi dan variatif pada kelompok risiko tinggi.
+**Insight : **Tekanan sistolik lebih tinggi dan variatif pada kelompok risiko tinggi.
 
 #### 4.2.3 Distribusi Tekanan Darah Diastolik berdasarkan RiskLevel
 
@@ -135,7 +135,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
   <img src="images/diastolic_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : ** Tekanan diastolik lebih tinggi pada kelompok risiko tinggi.
+**Insight : ** Tekanan diastolik lebih tinggi pada kelompok risiko tinggi.
 
 #### 4.2.4 Distribusi Gula Darah berdasarkan RiskLevel
 
@@ -143,7 +143,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
   <img src="images/sugar_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : ** Gula darah pada risiko tinggi menunjukkan nilai tengah dan rentang lebih tinggi.
+**Insight : ** Gula darah pada risiko tinggi menunjukkan nilai tengah dan rentang lebih tinggi.
 
 #### 4.2.5 Distribusi Suhu Tubuh berdasarkan RiskLevel
 
@@ -151,7 +151,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
   <img src="images/temperature_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : ** Suhu tubuh ibu berisiko tinggi sedikit lebih tersebar di suhu tinggi.
+**Insight : ** Suhu tubuh ibu berisiko tinggi sedikit lebih tersebar di suhu tinggi.
 
 #### 4.2.6 Distribusi Detak Jantung berdasarkan RiskLevel
 
@@ -159,7 +159,7 @@ Distribusi kelas cukup seimbang, sehingga tidak terlalu bermasalah untuk model k
   <img src="images/heartrate_by_risklevel.png" width="1000"/>
 </p>
 
-> **Insight : ** Detak jantung kelompok risiko tinggi sedikit lebih bervariasi.
+**Insight : ** Detak jantung kelompok risiko tinggi sedikit lebih bervariasi.
 
 ---
 
