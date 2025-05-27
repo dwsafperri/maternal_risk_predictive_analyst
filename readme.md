@@ -90,62 +90,47 @@ Langkah utama dalam proyek ini:
 
 ---
 
-## Catatan
-
-## Proyek ini bertujuan mendukung sistem kesehatan dalam upaya menurunkan angka kematian maternal dengan mengintegrasikan teknologi kecerdasan buatan ke dalam proses identifikasi risiko secara lebih dini dan efisien.
-
-# Prediksi Risiko Kehamilan dengan Machine Learning
-
-Proyek ini bertujuan untuk memprediksi tingkat risiko kehamilan (`low`, `mid`, `high`) berdasarkan data medis ibu hamil dengan menggunakan berbagai algoritma machine learning, yaitu: **SVM**, **KNN**, **Random Forest**, dan **XGBoost**.
-
-## 📁 Struktur Proyek
-
-```
-.
-├── predictive_analysis_maternal_risk.ipynb
-├── README.md
-├── images/
-│   ├── confusion_matrix_svm.png
-│   ├── confusion_matrix_knn.png
-│   ├── confusion_matrix_knn_tuned.png
-│   ├── confusion_matrix_rf_tuned.png
-│   ├── accuracy_comparison.png
-│   └── feature_importance.png
-
-```
-
-## 📊 Dataset
-
-Dataset berisi fitur-fitur medis seperti tekanan darah, usia, dan status gula darah, dengan target label berupa kategori risiko (`0` = rendah, `1` = sedang, `2` = tinggi).
-
 ## 🔍 Model yang Digunakan
 
 1. **SVM (Support Vector Machine)**
 
    - Akurasi: 53.85%
-   - [Confusion Matrix](images/confusion_matrix_svm.png)
+   <p align="center">
+     <img src="images/confusion_matrix_svm.png" width="600"/>
+   </p>
 
 2. **KNN (K-Nearest Neighbors)**
 
    - Akurasi awal: 62%
    - Akurasi setelah tuning: 67.03%
-   - [Confusion Matrix Sebelum Tuning](images/confusion_matrix_knn.png)
-   - [Confusion Matrix Setelah Tuning](images/confusion_matrix_knn_tuned.png)
+   <p align="center">
+     <img src="images/confusion_matrix_knn.png" width="600"/>
+   </p>
+   <p align="center">
+     <img src="images/confusion_matrix_knn_tuned.png" width="600"/>
+   </p>
 
 3. **Random Forest**
 
    - Akurasi setelah tuning: 71.43%
-   - [Confusion Matrix Sebelum Tuning](images/confusion_matrix_rf.png)
-   - [Confusion Matrix Setelah Tuning](images/confusion_matrix_rf_tuned.png)
+   <p align="center">
+     <img src="images/confusion_matrix_rf.png" width="600"/>
+   </p>
+   <p align="center">
+     <img src="images/confusion_matrix_rf_tuned.png" width="600"/>
+   </p>
 
 4. **XGBoost**
 
    - Akurasi: 65.93%
-   - [Confusion Matrix Sebelum Tuning](images/confusion_matrix_xgb.png)
-   - [Confusion Matrix Setelah Tuning](images/confusion_matrix_xgb_tuned.png)
+   <p align="center">
+     <img src="images/confusion_matrix_xgb.png" width="600"/>
+   </p>
+   <p align="center">
+     <img src="images/confusion_matrix_xgb_tuned.png" width="600"/>
+   </p>
 
-> Perbandingan akurasi setiap model ditampilkan pada grafik berikut:
-> ![Akurasi Per Model](images/akurasi_per_model.png)
+---
 
 ## ⚙️ Contoh Kode Pelatihan Model
 
@@ -200,7 +185,9 @@ print(classification_report(y_test, y_pred))
 
 Berikut adalah grafik perbandingan akurasi keempat model :
 
-![Perbandingan Akurasi](images/accuracy_comparison.png)
+<p align="center">
+  <img src="images/akurasi_per_model.png" width="800"/>
+</p>
 
 ## 🔍 Feature Importance
 
