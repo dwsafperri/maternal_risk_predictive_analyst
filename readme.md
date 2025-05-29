@@ -870,7 +870,7 @@ weighted avg    0.79      0.70      0.63        91
 ## 8. **Model Selection**
 
 <p>
- <img src="model_selection.png" alt="Perbandingan Akurasi Model" width="600"/>
+ <img src="accuracy_comparison.png" alt="Perbandingan Akurasi Model" width="600"/>
 </p>
 
 | Model         | Akurasi (%) |
