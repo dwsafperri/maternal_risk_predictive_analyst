@@ -687,7 +687,8 @@ study_rf.optimize(objective, n_trials=100)
 
 Setelah tuning:
 
-```python
+```
+python
 best_params_rf = study_rf.best_params
 
 best_rf = RandomForestClassifier(
